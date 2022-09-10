@@ -1,25 +1,37 @@
-import logo from './logo.svg';
+import React, { useEffect, useState } from 'react';
 import './App.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import List from './components/List';
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+
+	const [posts, setPosts] = useState([]);
+
+	useEffect(() => {
+		fetch(`${process.env.REACT_APP_API_URL}/posts`)
+			.then((response) => response.json())
+			.then((data) => {
+				console.log(data);
+				setPosts(data);
+			})
+			.catch((err) => {
+				console.log(err.message);
+			});
+	}, []);
+
+	return (
+		<div className="App">
+			<div className="list-container">
+				{
+					posts.map((item, index) => {
+						return (
+							<List key={index} item={item} />
+						);
+					}, [])
+				}
+			</div>
+		</div>
+	);
 }
 
 export default App;
